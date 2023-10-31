@@ -5,7 +5,7 @@ Welcome to the repository for the [Mantis team](#team) for the 2024 IEEE AESS Ra
 ## Mission
 <!--- TODO: Insert description of ISAR--->
 
-The proposed ISAR tracking system placed onshore would act as a low-cost monitoring system for an onshore team looking to observe water traffic. The utility of this would be similar to a dashcam, where the operators could see collision trajectories and track vessels that traveled at unsafe speeds on the water. Another use case would be for hobbyist to have more means of engaging in boat watching. The benefit of this system over an optical system is that it works even in poor visibility conditions. It also has the potential to be extended into a classification system, where it identifies the type of boat being tracked.
+The proposed ISAR tracking system placed onshore would act as a low-cost monitoring system for an onshore team looking to observe water traffic. The utility of this would be similar to a dashcam, where the operators could see collision trajectories. Another use case would be for hobbyist to have more means of engaging in boat watching. The benefit of this system over an optical system is that it works even in poor visibility conditions. It also has the potential to be extended into a classification system, where it identifies the type of boat being tracked.
 
 ## Team
 

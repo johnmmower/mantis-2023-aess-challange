@@ -1,4 +1,4 @@
-# mantis-2024-aess-challange
+# mantis-2024-aess-challenge
 
 Welcome to the repository for the [Mantis team](#team) for the 2024 IEEE AESS Radar Challenge.
 

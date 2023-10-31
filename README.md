@@ -16,7 +16,7 @@ The Mantis team is affiliated with the University of Washington Applied Physics 
 > John Mower received his BSEE and MSEE degrees from the University of Washington, (2010 and 2012), where he studied electromagnetics and millimeter-wave remote sensing. He is currently a Senior Research Engineer at the Applied Physics Laboratory – University of Washington. His current work includes RF and acoustic communications and remote sensing. Always happy to discuss radar, radio, acoustics, and remote sensing, he can be reached at mowerj@uw.edu.
 
 ### Dylan Wesen
-<!--- TODO: Insert bio--->
+Dylan Wesen is first-year mechanical engineering graduate student at the University of Washington, studying control systems, vibrations, and acoustics. While in undergrad, he assisted in the designing and testing of sonar systems with the University of Washington Applied Physics Lab. His current research explores novel array designs for remote sensing and communications.
 
 ### Nicole Pham
 

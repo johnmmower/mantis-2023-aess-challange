@@ -95,9 +95,18 @@ class MyApp:
         self.sdr_ip = sdr_ip
         self.rpi_ip = rpi_ip
 
+        self.tdd = None
+        self.sdr_pins = None
     def stop(self):
+        #self.tdd_config()
         self.count = 0
         self.do_go = False
+        self.tdd.enable = False
+        self.sdr_pins.gpio_phaser_enable = False
+        self.tdd.channel[1].polarity = not(self.sdr_pins.gpio_phaser_enable)
+        self.tdd.channel[2].polarity = self.sdr_pins.gpio_phaser_enable
+        self.tdd.enable = True
+        self.tdd.enable = False
 
 
     def hardware_init(self, sdr_ip, rpi_ip):
@@ -137,7 +146,7 @@ class MyApp:
         # Configure SDR Rx
         center_freq = 1.6e9
         self.sdr.rx_lo = int(center_freq)  # set this to output_freq - (the freq of the HB100)
-        print(self.sdr.rx)
+        #print(self.sdr.rx)
         self.sdr.rx_enabled_channels = [0, 1]  # enable Rx1 (voltage0) and Rx2 (voltage1)
         self.sdr.gain_control_mode_chan0 = "manual"  # manual or slow_attack
         self.sdr.gain_control_mode_chan1 = "manual"  # manual or slow_attack
@@ -181,6 +190,7 @@ class MyApp:
         sdr_pins.gpio_tdd_ext_sync = True # If set to True, this enables external capture triggering using the L24N GPIO on the Pluto.  When set to false, an internal trigger pulse will be generated every second
         tdd = adi.tddn(self.sdr_ip)
         sdr_pins.gpio_phaser_enable = True
+        self.sdr_pins = sdr_pins
         tdd.enable = False         # disable TDD to configure the registers
         tdd.sync_external = True
         tdd.startup_delay_ms = 0
@@ -191,25 +201,25 @@ class MyApp:
 
         tdd.out_channel0_enable = True
         tdd.out_channel0_polarity = False
-        tdd.out_channel0_on_ms = 0.02
-        tdd.out_channel0_off_ms = 0.03
+        tdd.out_channel0_on_ms = 0.01
+        tdd.out_channel0_off_ms = 0.1
         tdd.out_channel1_enable = True
         tdd.out_channel1_polarity = False
-        tdd.out_channel1_on_ms = 0.02
-        tdd.out_channel1_off_ms = 0.03
-        tdd.out_channel2_enable = True
-        tdd.out_channel2_on_ms = 0.01
-        tdd.out_channel2_off_ms = 0.02
+        tdd.out_channel1_on_ms = 0.01
+        tdd.out_channel1_off_ms = 0.1
+        tdd.out_channel2_enable = False
         tdd.enable = True
 
+        self.tdd = tdd
 
     def sdr_config(self):
         sample_rate = self.sample_rate
         signal_freq = 5e5
 
         num_slices = 400
-        self.buffer_size = 2 ** (int(np.log2(self.frame_length_ms*(1e-3)*self.sample_rate*self.n_ramps)) + 1)
+        #self.buffer_size = 2 ** (int(np.log2(self.frame_length_ms*(1e-3)*self.sample_rate*self.n_ramps)) + 1)
         #self.buffer_size = 2 ** (int(np.log2(self.sample_rate/1e6 * self.ramp_time * self.n_ramps)) + 1)
+        self.buffer_size = 2 ** 19
         fft_size = int(self.buffer_size)
         img_array = np.ones((num_slices, fft_size)) * (-100)
 
@@ -308,5 +318,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 

@@ -184,20 +184,22 @@ class MyApp:
         tdd.enable = False         # disable TDD to configure the registers
         tdd.sync_external = True
         tdd.startup_delay_ms = 0
-        tdd.frame_length_ms = self.phaser.freq_dev_time/1e3 + 0.2    # each chirp is spaced this far apart
+        tdd.frame_length_ms = self.phaser.freq_dev_time/1e3 + 1.2    # each chirp is spaced this far apart
         self.frame_length_ms = tdd.frame_length_ms
         num_chirps = self.n_ramps
         tdd.burst_count = num_chirps       # number of chirps in one continuous receive buffer
 
         tdd.out_channel0_enable = True
         tdd.out_channel0_polarity = False
-        tdd.out_channel0_on_ms = 0.01
-        tdd.out_channel0_off_ms = 0.1
+        tdd.out_channel0_on_ms = 0.02
+        tdd.out_channel0_off_ms = 0.03
         tdd.out_channel1_enable = True
         tdd.out_channel1_polarity = False
-        tdd.out_channel1_on_ms = 0.01
-        tdd.out_channel1_off_ms = 0.1
-        tdd.out_channel2_enable = False
+        tdd.out_channel1_on_ms = 0.02
+        tdd.out_channel1_off_ms = 0.03
+        tdd.out_channel2_enable = True
+        tdd.out_channel2_on_ms = 0.01
+        tdd.out_channel2_off_ms = 0.02
         tdd.enable = True
 
 
@@ -214,7 +216,7 @@ class MyApp:
         self.sdr.sample_rate = int(sample_rate)
         self.sdr.rx_buffer_size = int(fft_size)
 
-        N = int(2**18)
+        N = int(self.buffer_size)
         fc = int(signal_freq)
         ts = 1 / float(sample_rate)
         t = np.arange(0, N * ts, ts)
@@ -280,6 +282,18 @@ class MyApp:
 
         self.phaser_config()
         self.sdr_config()
+        
+        print(
+            """
+        CONFIG:
+        Sample rate: {sample_rate}MHz
+        Num samples: 2^{Nlog2}
+        Ramp time: {ramp_time}ms
+        """.format(
+                sample_rate=self.sample_rate / 1e6,
+                Nlog2=int(np.log2(self.sdr.rx_buffer_size)),
+                ramp_time=self.ramp_time / 1e3)
+        )
 
         self.do_go = True
         self.run()

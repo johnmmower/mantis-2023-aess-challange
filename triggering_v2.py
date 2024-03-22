@@ -20,7 +20,7 @@ class PhaserRunner:
 
         self.buffer_size = 2**17
 
-        self.sample_rate = 24e6
+        self.sample_rate = 25e6
         self.ramp_time = 600
         self.n_ramps = 3
         self.n_steps = self.ramp_time
@@ -99,7 +99,7 @@ class PhaserRunner:
         )
 
         # Configure SDR Rx
-        center_freq = 1.6e9
+        center_freq = 2.2e9
         self.sdr.rx_lo = int(center_freq)  # set this to output_freq - (the freq of the HB100)
         #print(self.sdr.rx)
         self.sdr.rx_enabled_channels = [0, 1]  # enable Rx1 (voltage0) and Rx2 (voltage1)
@@ -116,7 +116,7 @@ class PhaserRunner:
 
     def phaser_config(self):
         # Configure the ADF4159 Rampling PLL
-        vco_freq = int(11.6e9)
+        vco_freq = int(12.05e9)
         BW = 500e6
         num_steps = int(self.n_steps)    # in general it works best if there is 1 step per us
         self.phaser.frequency = int(vco_freq / 4)
@@ -180,7 +180,8 @@ class PhaserRunner:
         self.sdr.sample_rate = int(sample_rate)
         self.sdr.rx_buffer_size = int(fft_size)
 
-        N = int(self.sdr.rx_buffer_size)
+        #N = int(self.sdr.rx_buffer_size)
+        N = int(signal_freq / 100)
         fc = int(signal_freq)
         ts = 1 / float(sample_rate)
         t = np.arange(0, N * ts, ts)
@@ -205,12 +206,12 @@ class PhaserRunner:
 
     def run(self):
         steer = self.steer_input.get()
-        angles = np.linspace(-15, 15, 7)
+        angles = np.linspace(-10, 10, 5)
 
         if self.do_go:
             if steer:
                 for i in range(len(angles)):
-                        time.sleep(2e-3) # 2ms
+                        time.sleep(5e-3) # 5ms
                         phase_delta = (
                             2
                             * 3.14159

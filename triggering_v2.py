@@ -24,7 +24,7 @@ class PhaserRunner:
         self.ramp_time = 600
         self.n_ramps = 3
         self.n_steps = self.ramp_time
-        self.frame_length_ms = int(self.ramp_time * 1e-3 * self.n_ramps * (1.1)) # 10% longer than we need for n cont. ramps
+        self.frame_length_ms = self.ramp_time * 1e-3 * self.n_ramps * (1.1) # 10% longer than we need for n cont. ramps
         
         self.folder = "./test"
 
@@ -99,14 +99,15 @@ class PhaserRunner:
         )
 
         # Configure SDR Rx
-        center_freq = 2.2e9
+        rxgain = 40
+        center_freq = 2.15e9
         self.sdr.rx_lo = int(center_freq)  # set this to output_freq - (the freq of the HB100)
         #print(self.sdr.rx)
         self.sdr.rx_enabled_channels = [0, 1]  # enable Rx1 (voltage0) and Rx2 (voltage1)
         self.sdr.gain_control_mode_chan0 = "manual"  # manual or slow_attack
         self.sdr.gain_control_mode_chan1 = "manual"  # manual or slow_attack
-        self.sdr.rx_hardwaregain_chan0 = int(20)  # must be between -3 and 70
-        self.sdr.rx_hardwaregain_chan1 = int(20)  # must be between -3 and 70
+        self.sdr.rx_hardwaregain_chan0 = int(rxgain)  # must be between -3 and 70
+        self.sdr.rx_hardwaregain_chan1 = int(rxgain)  # must be between -3 and 70
         # Configure SDR Tx
         self.sdr.tx_lo = int(center_freq)
         self.sdr.tx_enabled_channels = [0, 1]
@@ -116,7 +117,7 @@ class PhaserRunner:
 
     def phaser_config(self):
         # Configure the ADF4159 Rampling PLL
-        vco_freq = int(12.05e9)
+        vco_freq = int(12.0e9)
         BW = 500e6
         num_steps = int(self.n_steps)    # in general it works best if there is 1 step per us
         self.phaser.frequency = int(vco_freq / 4)
@@ -158,8 +159,8 @@ class PhaserRunner:
         tdd.channel[0].off_ms = 0.1
         tdd.channel[1].enable = True
         tdd.channel[1].polarity = False
-        tdd.channel[1].on_ms = 0.01
-        tdd.channel[1].off_ms = 0.1
+        tdd.channel[1].on_ms = 0.1
+        tdd.channel[1].off_ms = 0.2
         tdd.channel[2].enable = False
         tdd.enable = True
 
@@ -171,7 +172,8 @@ class PhaserRunner:
         signal_freq = 5e5
 
         num_slices = 400
-        self.buffer_size = 2 ** (int(np.log2(self.frame_length_ms*(1e-3)*sample_rate)) + 1) # round up to next power of 2 buffer size
+        self.buffer_size = int(self.frame_length_ms*(1e-3)*sample_rate)
+        #self.buffer_size = 2 ** int(np.ceil(np.log2(self.frame_length_ms*(1e-3)*sample_rate))) # round up to next power of 2 buffer size
         #self.buffer_size = 2 ** (int(np.log2(self.sample_rate/1e6 * self.ramp_time * self.n_ramps)) + 1)
         #self.buffer_size = 2 ** 19
         fft_size = int(self.buffer_size)

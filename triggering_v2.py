@@ -99,7 +99,7 @@ class PhaserRunner:
         )
 
         # Configure SDR Rx
-        rxgain = 40
+        rxgain = 30
         center_freq = 2.15e9
         self.sdr.rx_lo = int(center_freq)  # set this to output_freq - (the freq of the HB100)
         #print(self.sdr.rx)
